@@ -1,0 +1,18 @@
+child: GestureDetector(
+              //Detection horizontale
+              onHorizontalDragUpdate: (DragUpdateDetails details) {
+                if(details.delta.dx > 0) {
+                  print("Right");
+                } else if(details.delta.dx < 0) {
+                  print("Left");
+                }
+              },
+              //Detection verticale
+              onVerticalDragUpdate: (DragUpdateDetails details) {
+                if(details.delta.dy > 0) {
+                  print("Down");
+                } else if(details.delta.dy < 0) {
+                  print("Up");
+                }
+              },
+              child: Container(width: 100, height: 100, color: Colors.blue),
