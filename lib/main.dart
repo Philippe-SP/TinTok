@@ -1,5 +1,6 @@
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
+import "Pages/home.dart";
 
 void main() {
   runApp(const MainApp());
@@ -26,18 +27,20 @@ class _MainAppState extends State<MainApp> {
         //AppBar
         appBar: AppBar(
           centerTitle: true, 
-          title: const Text("TinTok", style: TextStyle(color: Colors.white, fontSize: 42, fontFamily: "josefin-sans")), 
-          backgroundColor: const Color.fromARGB(190, 110, 0, 0),
+          title: const Text("TinTok", style: TextStyle(color: Colors.black, fontSize: 42, fontFamily: "josefin-sans")),
+          backgroundColor: const Color.fromARGB(255, 191, 191, 191),
         ),
         //Menu burger
         drawer: Drawer(
           child: ListView(
             padding: EdgeInsets.zero,
             children: const [
+              //En-tete du menu burger
               DrawerHeader(
-                decoration: BoxDecoration(color: Color.fromARGB(255, 110, 0, 0)),
+                decoration: BoxDecoration(color: Color.fromARGB(182, 61, 61, 61)),
                 child: Text("Drawer Header", style: TextStyle(color: Colors.white, fontSize: 38, fontFamily: "josefin-sans"))
               ),
+              //Page home
               ListTile(
                 title: Row(
                   children: [
@@ -47,6 +50,7 @@ class _MainAppState extends State<MainApp> {
                   ]
                 )
               ),
+              //Page N°2
               ListTile(
                 title: Row(
                   children: [
@@ -56,6 +60,7 @@ class _MainAppState extends State<MainApp> {
                   ]
                 )
               ),
+              //Page N°3
               ListTile(
                 title: Row(
                   children: [
@@ -78,118 +83,27 @@ class _MainAppState extends State<MainApp> {
                 fit: BoxFit.cover,
               ),
             ),
-            child: GestureDetector(
-              onVerticalDragUpdate: (DragUpdateDetails details) {
-                if(details.delta.dy < 0) {
-                  setState(() {
-                    _draggableScrollableController.jumpTo(0.2);
-                    print("move");
-                  });
-                }
-              },
-              child: Center(
-                child: DraggableScrollableSheet(
-                  initialChildSize: 0.0,
-                  minChildSize: 0.0,
-                  maxChildSize: 0.8,
-                  snap: true,
-                  controller: _draggableScrollableController,
-                  builder: (
-                    BuildContext context, 
-                    ScrollController scrollController) {
-                      return SingleChildScrollView(
-                        controller: scrollController,
-                        child: Center(
-                          child: Container(
-                            //decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10))),
-                            width: double.maxFinite, 
-                            height: 600,
-                            color: const Color.fromARGB(182, 61, 61, 61),
-                            padding: const EdgeInsets.only(top: 50),
-                            child: Column(
-                              children: [
-                                Expanded(
-                                  child: ListView(
-                                    padding: EdgeInsets.zero,
-                                    children: const <Widget>[
-                                      ListTile(
-                                        title: Row(
-                                          children: [
-                                            Icon(Icons.comment, color: Color.fromARGB(255, 191, 191, 191), size: 50),
-                                            Padding(padding: EdgeInsets.only(left: 10)),
-                                            Text("Commentaire 1", style: TextStyle(color: Colors.white, fontSize: 42, fontFamily: "josefin-sans"))
-                                          ],
-                                        ),
-                                      ),
-                                      ListTile(
-                                        title: Row(
-                                          children: [
-                                            Icon(Icons.comment, color: Color.fromARGB(255, 191, 191, 191), size: 50),
-                                            Padding(padding: EdgeInsets.only(left: 10)),
-                                            Text("Commentaire 2",  style: TextStyle(color: Colors.white, fontSize: 42, fontFamily: "josefin-sans"))
-                                          ],
-                                        ),
-                                      ),
-                                      ListTile(
-                                        title: Row(
-                                          children: [
-                                            Icon(Icons.comment, color: Color.fromARGB(255, 191, 191, 191), size: 50),
-                                            Padding(padding: EdgeInsets.only(left: 10)),
-                                            Text("Commentaire 3",  style: TextStyle(color: Colors.white, fontSize: 42, fontFamily: "josefin-sans"))
-                                          ],
-                                        ),
-                                      ),
-                                      ListTile(
-                                        title: Row(
-                                          children: [
-                                            Icon(Icons.comment, color: Color.fromARGB(255, 191, 191, 191), size: 50),
-                                            Padding(padding: EdgeInsets.only(left: 10)),
-                                            Text("Commentaire 4",  style: TextStyle(color: Colors.white, fontSize: 42, fontFamily: "josefin-sans"))
-                                          ],
-                                        ),
-                                      ),
-                                    ]
-                                  ),
-                                )
-                              ]
-                            ),
-                          )
-                        ),
-                      );
-                    },
-                ),
-              )
-            ),
+            //Detection des mouvements tactiles
+            child: const HomeScreen(),
           ),
         ),
-        bottomNavigationBar: const BottomAppBar(
-          color: Color.fromARGB(190, 110, 0, 0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Icon(Icons.alarm, color: Colors.white, size: 35),
-              Icon(Icons.backpack, color: Colors.white, size: 35),
-              Icon(Icons.label, color: Colors.white, size: 35),
-            ]
-          )
-        ),
-    ));
+        //Footer de l'application
+        bottomNavigationBar: BottomNavigationBar(items: const [
+          BottomNavigationBarItem(
+              icon: Icon(Icons.alarm, color: Colors.black, size: 35),
+              label: 'Alarm'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.backpack, color: Colors.black, size: 35),
+              label: 'BackPack'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.label, color: Colors.black, size: 35),
+              label: 'label'),
+        ],
+        backgroundColor: const Color.fromARGB(255, 191, 191, 191),),
+      ),
+    );
   }
 }
 
-// void switchBackgroung(index) {
-//   switch(index) {
-//     case 1:
-//       background = "assets/images/background.jpg";
-//       break;
-//     case 2:
-//       background = "assets/images/background_second.jpg";
-//       break;
-//     case 3:
-//       background = "assets/images/background_third.jpg";
-//       break;
-//     case 4:
-//       background = "assets/images/background_fourth.jpeg";
-//       break;
-//   }
-// }
+
+
