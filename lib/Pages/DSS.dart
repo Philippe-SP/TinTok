@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 //DraggableScrollableSheet Class
 class DSS extends StatefulWidget {
@@ -11,100 +12,53 @@ class DSS extends StatefulWidget {
 }
 
 class _DSSState extends State<DSS> {
-  final List<double> _snapSize = [0.1, 0.5, 0.8];
+  //Tableau de tailles du DSS
+  final List<double> _snapSize = [0.05, 0.5, 0.8];
+
+  //Récuération des données depuis supabase
+  final _future = Supabase.instance.client.from('Comments').select();
 
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
       controller: widget.dsscontroller,
+      snap: true,
+      snapSizes: _snapSize,
       initialChildSize: _snapSize[0],
       minChildSize: _snapSize[0],
       maxChildSize: _snapSize[2],
-      snap: true,
       builder: (BuildContext context, ScrollController scrollController) {
         print("======== DSS Build ========");
-        return Center(
-            child: Container(
-          width: double.maxFinite,
-          height: 600,
-          color: const Color.fromARGB(182, 61, 61, 61),
-          padding: const EdgeInsets.only(top: 50),
-          child: Column(children: [
-            Expanded(
-              child:
-                  ListView(padding: EdgeInsets.zero, children: const <Widget>[
-                ListTile(
-                  title: Row(
-                    children: [
-                      Icon(Icons.comment,
-                          color: Color.fromARGB(255, 191, 191, 191), size: 50),
-                      Padding(padding: EdgeInsets.only(left: 10)),
-                      Text(
-                        "Commentaire 1",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 42,
-                            fontFamily: "josefin-sans"),
-                      )
-                    ],
-                  ),
-                ),
-                ListTile(
-                  title: Row(
-                    children: [
-                      Icon(Icons.comment,
-                          color: Color.fromARGB(255, 191, 191, 191), size: 50),
-                      Padding(padding: EdgeInsets.only(left: 10)),
-                      Text(
-                        "Commentaire 2",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 42,
-                            fontFamily: "josefin-sans"),
-                      )
-                    ],
-                  ),
-                ),
-                ListTile(
-                  title: Row(
-                    children: [
-                      Icon(Icons.comment,
-                          color: Color.fromARGB(255, 191, 191, 191), size: 50),
-                      Padding(padding: EdgeInsets.only(left: 10)),
-                      Text(
-                        "Commentaire 3",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 42,
-                            fontFamily: "josefin-sans"),
-                      )
-                    ],
-                  ),
-                ),
-                ListTile(
-                  title: Row(
-                    children: [
-                      Icon(
-                        Icons.comment,
-                        color: Color.fromARGB(255, 191, 191, 191),
-                        size: 50,
-                      ),
-                      Padding(padding: EdgeInsets.only(left: 10)),
-                      Text(
-                        "Commentaire 4",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 42,
-                          fontFamily: "josefin-sans",
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ]),
-            )
-          ]),
-        ));
+        return Container(
+          color: const Color.fromARGB(180, 191, 191, 191),
+          child: FutureBuilder(
+            future: _future,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              final Comments = snapshot.data!;
+              return ListView.builder(
+                controller: scrollController,
+                itemCount: Comments.length,
+                itemBuilder: (BuildContext context, int index) {
+                  final comment = Comments[index];
+                  return ListTile(
+                    leading: CircleAvatar(
+                      child: Image.network(
+                          "https://storage.googleapis.com/cms-storage-bucket/0dbfcc7a59cd1cf16282.png"),
+                    ),
+                    title: Text(
+                      comment['content'],
+                      style: const TextStyle(fontSize: 20),
+                    ),
+                    subtitle: const Divider(color: Colors.black),
+                  );
+                },
+              );
+            },
+          ),
+        );
       },
     );
   }
