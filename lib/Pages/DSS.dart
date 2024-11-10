@@ -3,9 +3,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 //DraggableScrollableSheet Class
 class DSS extends StatefulWidget {
-  final DraggableScrollableController dsscontroller;
+  final DraggableScrollableController dssController;
 
-  const DSS({super.key, required this.dsscontroller});
+  const DSS({super.key, required this.dssController});
 
   @override
   State<DSS> createState() => _DSSState();
@@ -13,7 +13,7 @@ class DSS extends StatefulWidget {
 
 class _DSSState extends State<DSS> {
   //Tableau de tailles du DSS
-  final List<double> _snapSize = [0.05, 0.5, 0.8];
+  final List<double> _snapSize = [0.0, 0.5, 0.8];
 
   //Récuération des données depuis supabase
   final _future = Supabase.instance.client.from('Comments').select();
@@ -21,7 +21,7 @@ class _DSSState extends State<DSS> {
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
-      controller: widget.dsscontroller,
+      controller: widget.dssController,
       snap: true,
       snapSizes: _snapSize,
       initialChildSize: _snapSize[0],

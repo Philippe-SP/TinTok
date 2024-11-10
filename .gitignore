@@ -43,4 +43,4 @@ app.*.map.json
 /android/app/release
 
 # Fichier caché sur github
-git rm --cached FILENAME
+database_logs.dart

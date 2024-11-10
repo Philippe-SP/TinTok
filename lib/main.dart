@@ -1,6 +1,7 @@
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:supabase_flutter/supabase_flutter.dart";
+import "package:tintok/Pages/BottomBar.dart";
 import "package:tintok/Pages/home.dart";
 
 import "logs/database_logs.dart";
@@ -75,35 +76,9 @@ class MainApp extends StatelessWidget {
           ],
         )),
         //Contenu principal de l'application
-        body: SafeArea(
-          //Image de fond
-          child: Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage("assets/images/background.jpg"),
-                fit: BoxFit.cover,
-              ),
-            ),
-            //Detection des mouvements tactiles
-            child: const HomeScreen(),
-          ),
-        ),
+        body: const HomeScreen(),
         //Footer de l'application
-        bottomNavigationBar: BottomNavigationBar(
-          items: const [
-            BottomNavigationBarItem(
-                icon: Icon(Icons.home, color: Colors.black, size: 35),
-                label: 'Home'),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.comment, color: Colors.black, size: 35),
-                label: 'Comments'),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person, color: Colors.black, size: 35),
-              label: 'Profile',
-            ),
-          ],
-          backgroundColor: const Color.fromARGB(255, 191, 191, 191),
-        ),
+        bottomNavigationBar: const BottomBar(),
       ),
     );
   }

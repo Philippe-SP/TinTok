@@ -1,15 +1,16 @@
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:supabase_flutter/supabase_flutter.dart";
-import 'package:tintok/Pages/SignUp.dart';
-import "package:tintok/main.dart";
+import 'package:tintok/Pages/login.dart';
 import "package:tintok/services/auth_service.dart";
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+class SignUpPage extends StatelessWidget {
+  const SignUpPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final user = AuthService().user;
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -79,7 +80,7 @@ class LoginPage extends StatelessWidget {
                 width: 350,
                 height: 600,
                 padding: const EdgeInsets.only(left: 10, right: 20),
-                child: const FormSignIn(),
+                child: const FormSignUp(),
               ),
             ),
           ),
@@ -104,37 +105,34 @@ class LoginPage extends StatelessWidget {
   }
 }
 
-//Widget formulaire signIn
-class FormSignIn extends StatefulWidget {
-  const FormSignIn({super.key});
+//Widget formulaire signUp
+class FormSignUp extends StatefulWidget {
+  const FormSignUp({super.key});
 
   @override
-  State<FormSignIn> createState() => _FormSignInState();
+  State<FormSignUp> createState() => _FormSignUpState();
 }
 
-class _FormSignInState extends State<FormSignIn> {
-  //Clé pour le formulaire
-  final _formKey = GlobalKey<FormState>();
-
-  final user = AuthService().user;
-
+class _FormSignUpState extends State<FormSignUp> {
   //Controlleurs pour récupérer les valeurs des champs de formulaire
   final TextEditingController emailController = TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController profilePictureController =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: _formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Padding(padding: EdgeInsets.only(top: 20)),
+          const Padding(padding: EdgeInsets.only(top: 10)),
           const Text(
-            "Login",
+            "Sign Up",
             style: TextStyle(fontSize: 48, fontFamily: "josefin-sans"),
           ),
-          const Padding(padding: EdgeInsets.only(top: 50)),
+          const Padding(padding: EdgeInsets.only(top: 10)),
           /* ----------------- Email field ----------------- */
           TextFormField(
             controller: emailController,
@@ -152,13 +150,28 @@ class _FormSignInState extends State<FormSignIn> {
               hintText: "Email",
             ),
           ),
-          const Padding(padding: EdgeInsets.only(top: 30)),
+          const Padding(padding: EdgeInsets.only(top: 20)),
+          /* ----------------- Username field ----------------- */
+          TextFormField(
+            controller: usernameController,
+            validator: (usernameController) {
+              if (usernameController == null || usernameController.isEmpty) {
+                return "Please enter a value";
+              }
+              return null;
+            },
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                borderSide: BorderSide(),
+              ),
+              hintText: "Username",
+            ),
+          ),
+          const Padding(padding: EdgeInsets.only(top: 20)),
           /* ----------------- Password field ----------------- */
           TextFormField(
             controller: passwordController,
-            obscureText: true,
-            enableSuggestions: false,
-            autocorrect: false,
             validator: (passwordController) {
               if (passwordController == null || passwordController.isEmpty) {
                 return "Please enter a value";
@@ -173,22 +186,49 @@ class _FormSignInState extends State<FormSignIn> {
               hintText: "Password",
             ),
           ),
-          const Padding(padding: EdgeInsets.only(top: 40)),
+          const Padding(padding: EdgeInsets.only(top: 20)),
+          /* ----------------- Profile picture field ----------------- */
+          TextFormField(
+            controller: profilePictureController,
+            validator: (profilePictureController) {
+              if (profilePictureController == null ||
+                  profilePictureController.isEmpty) {
+                return "Please enter a value";
+              }
+              return null;
+            },
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                borderSide: BorderSide(),
+              ),
+              hintText: "Profile picture link",
+            ),
+          ),
+          const Padding(padding: EdgeInsets.only(top: 20)),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               ElevatedButton(
-                  onPressed: () async {
-                    final AuthResponse res = await AuthService().signInNewUser(
-                        passwordController.text, emailController.text);
-                    if (res.session != null && res.user != null) {
-                      print("Logged In");
+                  onPressed: () {
+                    //Ajout des données dans la Auth
+                    AuthService().signUpNewUser(
+                        emailController.text, passwordController.text);
+                    //Ajout des données dans la bdd
+                    Supabase.instance.client.from('Users').insert({
+                      'username': usernameController,
+                      'profil_picture': profilePictureController,
+                      'email': emailController,
+                      'created_at': DateTime.now(),
+                    });
+                    if (AuthResponse == true) {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const MainApp()));
+                              builder: (context) => const LoginPage()));
                     } else {
-                      print("Echec connexion");
+                      const AlertDialog(
+                          title: Text("Erreur lors de l'inscription"));
                     }
                   },
                   child: const Text("Submit")),
@@ -200,11 +240,11 @@ class _FormSignInState extends State<FormSignIn> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const SignUpPage()));
+                            builder: (context) => const LoginPage()));
                   },
-                  child: Text("Sign Up")),
+                  child: const Text("Sign In")),
             ],
-          )
+          ),
         ],
       ),
     );

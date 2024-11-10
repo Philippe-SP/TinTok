@@ -1,74 +1,60 @@
-import "package:flutter/cupertino.dart";
-import "package:flutter/material.dart";
-
-class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: const Text("TinTok",
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 42,
-                  fontFamily: "josefin-sans")),
-          backgroundColor: const Color.fromARGB(255, 191, 191, 191),
-        ),
-        drawer: Drawer(
-            child: ListView(
-          padding: EdgeInsets.zero,
-          children: const [
-            //En-tete du menu burger
-            DrawerHeader(
-                decoration:
-                    BoxDecoration(color: Color.fromARGB(182, 61, 61, 61)),
-                child: Text("Drawer Header",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 38,
-                        fontFamily: "josefin-sans"))),
-            //Page home
-            ListTile(
-                title: Row(children: [
-              Icon(Icons.home, color: CupertinoColors.black),
-              Padding(padding: EdgeInsets.only(left: 10)),
-              Text("Home",
-                  style: TextStyle(fontSize: 24, fontFamily: "josefin-sans"))
-            ])),
-            //Page N°2
-            ListTile(
-                title: Row(children: [
-              Icon(Icons.calendar_month, color: CupertinoColors.black),
-              Padding(padding: EdgeInsets.only(left: 10)),
-              Text("Page 2",
-                  style: TextStyle(fontSize: 24, fontFamily: "josefin-sans"))
-            ])),
-            //Page N°3
-            ListTile(
-                title: Row(children: [
-              Icon(Icons.list, color: CupertinoColors.black),
-              Padding(padding: EdgeInsets.only(left: 10)),
-              Text("Page 3",
-                  style: TextStyle(fontSize: 24, fontFamily: "josefin-sans"))
-            ])),
-          ],
-        )),
-        body: SafeArea(
-          //Image de fond
-          child: Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage("assets/images/background.jpg"),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
+// import "package:flutter/material.dart";
+// import "package:supabase_flutter/supabase_flutter.dart";
+//
+// class ProfilePage extends StatefulWidget {
+//   const ProfilePage({super.key, required this.profiledDssController});
+//
+//   final DraggableScrollableController profiledDssController;
+//
+//   @override
+//   State<ProfilePage> createState() => _ProfilePageState();
+// }
+//
+// class _ProfilePageState extends State<ProfilePage> {
+//   @override
+//   Widget build(BuildContext context) {
+//     //Tableau de tailles du DSS
+//     final List<double> _snapSize = [1.0, 0.5, 0.0];
+//
+//     //Récuération des données depuis supabase
+//     final _future = Supabase.instance.client.from('Users').select();
+//
+//     return DraggableScrollableSheet(
+//       controller: widget.profiledDssController,
+//       snap: true,
+//       snapSizes: _snapSize,
+//       initialChildSize: _snapSize[0],
+//       minChildSize: _snapSize[0],
+//       maxChildSize: _snapSize[2],
+//       builder: (BuildContext context, ScrollController scrollController) {
+//         print("======== DSS Build ========");
+//         return Container(
+//           color: const Color.fromARGB(180, 191, 191, 191),
+//           child: FutureBuilder(
+//             future: _future,
+//             builder: (context, snapshot) {
+//               if (!snapshot.hasData) {
+//                 return const Center(child: CircularProgressIndicator());
+//               }
+//               final Users = snapshot.data!;
+//               return ListView.builder(
+//                 controller: scrollController,
+//                 itemCount: Users.length,
+//                 itemBuilder: (BuildContext context, int index) {
+//                   final user = Users[index];
+//                   return ListTile(
+//                     title: Text(
+//                       user['username'],
+//                       style: const TextStyle(fontSize: 20),
+//                     ),
+//                     subtitle: const Divider(color: Colors.black),
+//                   );
+//                 },
+//               );
+//             },
+//           ),
+//         );
+//       },
+//     );
+//   }
+// }
