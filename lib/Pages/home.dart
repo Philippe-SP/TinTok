@@ -1,7 +1,7 @@
 //Page d'accueil principal
 import 'package:flutter/material.dart';
 import 'package:tintok/Pages/DSS.dart';
-import 'package:tintok/Pages/login.dart';
+import 'package:tintok/Pages/profil.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -33,6 +33,8 @@ class HomeScreen extends StatelessWidget {
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeIn,
             );
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const ProfilePage()));
             print("Afficher le profil");
           }
         },
@@ -45,14 +47,10 @@ class HomeScreen extends StatelessWidget {
             print("Like");
           }
         },
-        onTap: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const LoginPage()));
-        },
         child: Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage("assets/images/background.jpg"),
+              image: AssetImage("assets/images/home_bg.jpg"),
               fit: BoxFit.cover,
             ),
           ),
