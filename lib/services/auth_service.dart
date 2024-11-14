@@ -5,6 +5,26 @@ class AuthService {
 
   User? get user => supaAuth.currentUser;
 
+  //Récupération des données de l'utilisateur depuis la bdd
+  Future<Map<String, dynamic>> GetUserFromDatabase(String userEmail) async {
+    // Appel aux trois fonctions de récupération
+    final _userEmail = await Supabase.instance.client
+        .from('Users')
+        .select('email, username, profil_picture')
+        .eq('email', userEmail)
+        .single();
+    print(_userEmail['email']);
+    print(_userEmail['username']);
+    print(_userEmail['profil_picture']);
+
+    // Retourner les données sous forme de Map
+    return {
+      'email': _userEmail['email'],
+      'username': _userEmail['username'],
+      'profil_picture': _userEmail['profil_picture'],
+    };
+  }
+
   //signIn function
   Future<AuthResponse> signInNewUser(
     String password,

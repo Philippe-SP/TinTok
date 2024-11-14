@@ -1,96 +1,93 @@
-import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
-import "package:tintok/Pages/BottomBar.dart";
 import "package:tintok/main.dart";
+import "package:tintok/services/auth_service.dart";
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  const ProfilePage({super.key, required this.userData});
+
+  final Map<String, dynamic> userData;
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  // Déclaration de variables sans initialisation directe pour pouvoir utiliser widget.userData
+  late String email;
+  final user = AuthService().user;
+  late Future<Map<String, dynamic>> _futureUserData;
+
   @override
+  //Fonction permettant d'initialiser mes variables crée juste avant
+  void initState() {
+    super.initState();
+    email = widget.userData['email'] ?? 'Adresse email non disponible';
+    _futureUserData = AuthService()
+        .GetUserFromDatabase(email); // Initialise `_future` après `email`
+  }
+
   Widget build(BuildContext context) {
-    return MaterialApp(
-      //Enlever la baniere debug en haut a droite
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        //AppBar
-        appBar: AppBar(
-          centerTitle: true,
-          title: const Text("TinTok",
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 42,
-                  fontFamily: "josefin-sans")),
-          backgroundColor: const Color.fromARGB(255, 191, 191, 191),
-        ),
-        //Menu burger
-        drawer: Drawer(
-            child: ListView(
-          padding: EdgeInsets.zero,
-          children: const [
-            //En-tete du menu burger
-            DrawerHeader(
-                decoration:
-                    BoxDecoration(color: Color.fromARGB(182, 61, 61, 61)),
-                child: Text("Drawer Header",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 38,
-                        fontFamily: "josefin-sans"))),
-            //Page home
-            ListTile(
-                title: Row(children: [
-              Icon(Icons.home, color: CupertinoColors.black),
-              Padding(padding: EdgeInsets.only(left: 10)),
-              Text("Home",
-                  style: TextStyle(fontSize: 24, fontFamily: "josefin-sans"))
-            ])),
-            //Page N°2
-            ListTile(
-                title: Row(children: [
-              Icon(Icons.calendar_month, color: CupertinoColors.black),
-              Padding(padding: EdgeInsets.only(left: 10)),
-              Text("Page 2",
-                  style: TextStyle(fontSize: 24, fontFamily: "josefin-sans"))
-            ])),
-            //Page N°3
-            ListTile(
-                title: Row(children: [
-              Icon(Icons.list, color: CupertinoColors.black),
-              Padding(padding: EdgeInsets.only(left: 10)),
-              Text("Page 3",
-                  style: TextStyle(fontSize: 24, fontFamily: "josefin-sans"))
-            ])),
-          ],
-        )),
-        //Contenu principal de l'application
-        body: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/images/profile_bg.jpg"),
-              fit: BoxFit.cover,
-            ),
-          ),
-          child: Center(
-            child: Container(
-              height: 50,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => const MainApp()));
-                },
-                child: const Text("Retour aux vidéos"),
+    return FutureBuilder<Map<String, dynamic>>(
+        future: _futureUserData,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text("Erreur: ${snapshot.error}"));
+          } else if (snapshot.hasData) {
+            final _userData = snapshot.data!;
+            return Container(
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage("assets/images/profile_bg.jpg"),
+                  fit: BoxFit.cover,
+                ),
               ),
-            ),
-          ),
-        ),
-        //Footer de l'application
-        bottomNavigationBar: const BottomBar(),
-      ),
-    );
+              child: Center(
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Color.fromARGB(180, 191, 191, 191),
+                    borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                  ),
+                  width: 350,
+                  height: 600,
+                  child: Column(
+                    children: [
+                      const Padding(padding: EdgeInsets.only(bottom: 40)),
+                      CircleAvatar(
+                        radius: 50,
+                        child: Image.network(_userData['profile_picture']),
+                      ),
+                      const Padding(padding: EdgeInsets.only(bottom: 40)),
+                      Text(
+                        "Nom: ${_userData['username']}",
+                        style: const TextStyle(fontSize: 20),
+                      ),
+                      const Padding(padding: EdgeInsets.only(bottom: 20)),
+                      Text(
+                        "Email: ${_userData['email']}",
+                        style: const TextStyle(fontSize: 20),
+                      ),
+                      const Padding(padding: EdgeInsets.only(bottom: 100)),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => MainApp(
+                                        userData: widget.userData,
+                                      )));
+                        },
+                        child: const Text("Retour aux vidéos"),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          } else {
+            return const Center(child: Text("Pas de données disponibles"));
+          }
+        });
   }
 }

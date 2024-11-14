@@ -110,10 +110,17 @@ class _FormSignInState extends State<FormSignIn> {
                       passwordController.text, emailController.text);
                   if (res.session != null && res.user != null) {
                     print("Logged In");
+                    print(res.user);
+                    print(res.session);
+                    // Récupération des données de l'utilisateur
+                    final userData = {
+                      'userId': res.user!.id,
+                      'email': res.user!.email,
+                    };
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const MainApp()));
+                            builder: (context) => MainApp(userData: userData)));
                   } else {
                     print("Echec connexion");
                   }

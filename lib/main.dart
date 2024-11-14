@@ -7,24 +7,31 @@ import "package:tintok/Pages/login.dart";
 
 import "logs/database_logs.dart";
 
+//Initialisation de la base de données
 Future<void> main() async {
-  runApp(const MainApp());
   WidgetsFlutterBinding.ensureInitialized();
 
   await Supabase.initialize(
     url: dbURL,
     anonKey: dbKey,
   );
+
+  runApp(MainApp(
+    userData: {},
+  ));
 }
 
 class MainApp extends StatefulWidget {
-  const MainApp({super.key});
+  MainApp({super.key, required this.userData});
+
+  final Map<String, dynamic> userData;
 
   @override
   State<MainApp> createState() => _MainAppState();
 }
 
 class _MainAppState extends State<MainApp> {
+  //Index du contenu de home
   int _currentIndex = 0;
 
   setCurrentIndex(int index) {
@@ -90,7 +97,9 @@ class _MainAppState extends State<MainApp> {
         )),
         //Contenu principal de l'application
         body: [
-          const HomeScreen(),
+          HomeScreen(
+            userData: widget.userData,
+          ),
           const LoginPage(),
           const SignUpPage(),
         ][_currentIndex],
